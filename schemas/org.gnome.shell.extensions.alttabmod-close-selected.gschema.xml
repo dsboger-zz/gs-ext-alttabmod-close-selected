@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+  
+  <enum id='org.gnome.shell.extensions.alttabmod-close-selected.AppCloseType'>
+    <value value='0' nick='close-all-windows'/>
+    <value value='1' nick='close-all-windows-in-current-workspace'/>
+    <value value='2' nick='close-most-recently-used-window'/>
+  </enum>
+
+  <schema path="/org/gnome/shell/extensions/alttabmod-close-selected/" id="org.gnome.shell.extensions.alttabmod-close-selected">
+    <key name="app-close-type" enum="org.gnome.shell.extensions.alttabmod-close-selected.AppCloseType">
+      <default>'close-all-windows'</default>
+      <summary>What to do when app is closed.</summary>
+      <description>When one Alt+Tab to an app and close it, there are some sensible behaviors: 'close-all-windows' (default) - close all windows of the selected app; 'close-all-windows-in-current-workspace' - close all windows of the selected app in the current workspace; 'close-most-recently-used-window' - close only the most recently used window of the selected app. This setting does not affect the behavior of closing a window (Alt+'Key above Tab').</description>
+    </key>
+  </schema>
+</schemalist>

@@ -1,0 +1,9 @@
+{
+    "shell-version": ["3.6"], 
+    "uuid": "Alt_Tab_Mod_Close_Selected_Window_Or_App@dsboger.com.br", 
+    "name": "Alt Tab Mod: Close Selected Window or App", 
+    "description": "Pressing 'F4' when Alt+Tab popup is visible closes either the selected window (Alt+'Key above Tab') or all windows of selected app (Alt+Tab). Actually, that is just the default behavior, you have some options.\n\nNotice that some windows may not close when asked (e.g. some may show a 'save changes' dialog), so the extension will activate the window before closing it in order to highlight that.\n\nOBS: not guaranteed to work together with other extensions that also modify Alt Tab popup. Tested only with 'Alt Tab Workspace' and other 'Alt Tab Mod: ...'.",
+    "version": 1,
+    "url": "https://github.com/dsboger/gs-ext-alttabmod-close-selected",
+    "settings-schema": "org.gnome.shell.extensions.alttabmod-close-selected"
+}
