@@ -25,57 +25,15 @@ const AltTab = imports.ui.altTab;
 const Clutter = imports.gi.Clutter;
  
 const AppCloseType = {
-    CLOSE_ALL_WINDOWS: 0,
-    CLOSE_ALL_WINDOWS_IN_CURRENT_WORKSPACE: 1,
-    CLOSE_MOST_RECENTLY_USED_WINDOW: 2
+    QUIT_APP: 0,
+    CLOSE_ALL_WINDOWS: 1,
+    CLOSE_ALL_WINDOWS_IN_CURRENT_WORKSPACE: 2,
+    CLOSE_MOST_RECENTLY_USED_WINDOW: 3,
 };
 
 let _settings;
 
 let _originalInit;
-
-
-function _closeSelected() {
-    let app = this._appIcons[this._currentApp];
-    if (this._currentWindow >= 0) {
-        let window = app.cachedWindows[this._currentWindow];
-        Main.activateWindow(window);
-        window.delete(global.get_current_time());
-    } else {
-        let appCloseType = _settings.get_enum('app-close-type');
-        switch (appCloseType) {
-        
-        case AppCloseType.CLOSE_ALL_WINDOWS: {
-            let windows = app.cachedWindows; 
-            for each (let window in windows) {
-                Main.activateWindow(window);
-                window.delete(global.get_current_time());
-            }
-            break;
-        }
-            
-        case AppCloseType.CLOSE_ALL_WINDOWS_IN_CURRENT_WORKSPACE: {
-            let activeWorkspace = global.screen.get_active_workspace();
-            let windows = app.cachedWindows;
-            for each (let window in windows) {
-                if (window.get_workspace() == activeWorkspace) {
-                    Main.activateWindow(window);
-                    window.delete(global.get_current_time());
-                }
-            }
-            break;
-        }
-            
-        case AppCloseType.CLOSE_MOST_RECENTLY_USED_WINDOW: {
-            let window = app.cachedWindows[0];
-            Main.activateWindow(window);
-            window.delete(global.get_current_time());
-            break;
-        }
-        
-        }
-    }
-}
 
 function _modifiedInit() {
     let init = _originalInit;
@@ -87,9 +45,66 @@ function _modifiedInit() {
                 if (keysym == Clutter.F4) {
                     _closeSelected.apply(this);
                     this.destroy();
+                    
+                    return true;
                 }
+                
+                return false;
             }
         ));
+    }
+}
+
+function _closeSelected() {
+    let appIcon = this._appIcons[this._currentApp];
+    if (this._currentWindow >= 0) {
+        let window = appIcon.cachedWindows[this._currentWindow];
+        Main.activateWindow(window);
+        window.delete(global.get_current_time());
+    } else {
+        let appCloseType = _settings.get_enum('app-close-type');
+        switch (appCloseType) {
+        
+        case AppCloseType.QUIT_APP: {
+            appIcon.app.activate();
+            if (!appIcon.app.request_quit()) {
+                // fallback for when request_quit not supported
+                let windows = appIcon.app.get_windows(); 
+                for each (let window in windows)
+                    window.delete(global.get_current_time());
+            }
+            break;
+        }
+        
+        case AppCloseType.CLOSE_ALL_WINDOWS: {
+            let windows = appIcon.app.get_windows(); 
+            for each (let window in windows) {
+                Main.activateWindow(window);
+                window.delete(global.get_current_time());
+            }
+            break;
+        }
+            
+        case AppCloseType.CLOSE_ALL_WINDOWS_IN_CURRENT_WORKSPACE: {
+            let activeWorkspace = global.screen.get_active_workspace(); 
+            let windows = appIcon.app.get_windows();
+            for each (let window in windows) {
+                if (window.get_workspace() == activeWorkspace) {
+                    Main.activateWindow(window);
+                    window.delete(global.get_current_time());
+                }
+            }
+            break;
+        }
+            
+        case AppCloseType.CLOSE_MOST_RECENTLY_USED_WINDOW: {
+            let window = appIcon.cachedWindows[0];
+            Main.activateWindow(window);
+            window.delete(global.get_current_time());
+            break;
+        }
+        
+        }
     }
 }
 
